@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">FunFact</string>
+    <string name="hello">Hello World,</string>
+    <string name="firstApp">This is my first Android App.</string>
+    <string name="name">My name is Steven Wang</string>
+    <string name="interest">I just learned how to make lasagna last week, and I\'m probably going to make it again this weekend. It\'s delicious, Yum!</string>
+    <string name="lasagna">Lasagna</string>
+</resources>
