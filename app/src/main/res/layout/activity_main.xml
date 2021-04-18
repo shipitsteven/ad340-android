@@ -9,47 +9,81 @@
     android:padding="10sp"
     tools:context=".MainActivity">
 
-    <TextView
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
-        android:text="@string/hello"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        />
+        android:orientation="horizontal"
+        android:layout_marginTop="20sp"
+        >
+        <EditText
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20sp"
+            android:layout_marginBottom="20sp"
+            android:layout_marginStart="20sp"
+            android:layout_marginRight="20sp"
+            android:layout_marginEnd="20sp"
+            android:autofillHints="enter something"
+            android:inputType="text"
+            android:layout_weight="1"
+            android:hint="@string/enter_something"
+            tools:ignore="LabelFor"
+            />
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/info"
+            android:layout_marginLeft="10sp"
+            android:layout_marginStart="10sp"
+            android:layout_marginRight="50sp"
+            android:layout_marginEnd="50sp" />
+    </LinearLayout>
 
-    <TextView
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:text="@string/firstApp"
-        android:textSize="18sp"
-        />
+        android:orientation="horizontal"
+        android:layout_margin="10sp"
+        >
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/cities"
+            android:layout_margin="10sp"
+            android:layout_weight="1"
+            tools:ignore="ButtonStyle" />
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_margin="10sp"
+            android:text="@string/movies"
+            tools:ignore="ButtonStyle" />
 
-    <TextView
-        android:layout_width="wrap_content"
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="40dp"
-        android:text="@string/name"
-        android:textSize="24sp"
-        />
+        android:orientation="horizontal"
+        android:layout_margin="10sp"
+        >
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/parks"
+            android:layout_margin="10sp"
+            android:layout_weight="1"
+            tools:ignore="ButtonStyle" />
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_margin="10sp"
+            android:text="@string/traffic"
+            tools:ignore="ButtonStyle" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="40dp"
-        android:layout_marginHorizontal="10dp"
-        android:text="@string/interest"
-        android:textSize="20sp"
-        />
-
-    <ImageView
-        android:id="@+id/imageView"
-        android:layout_width="367dp"
-        android:layout_height="match_parent"
-        app:srcCompat="@drawable/lasagna"
-        android:padding="15sp"
-        android:contentDescription="@string/lasagna" />
+    </LinearLayout>
 
 
 </LinearLayout>

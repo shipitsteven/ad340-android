@@ -1,8 +1,10 @@
 <resources>
-    <string name="app_name">Lasagna is delicious</string>
-    <string name="hello">Hello World,</string>
-    <string name="firstApp">This is my first Android App.</string>
-    <string name="name">My name is Steven Wang</string>
-    <string name="interest">I just learned how to make lasagna last week, and I\'m probably going to make it again this weekend. It\'s delicious, Yum!</string>
-    <string name="lasagna">Lasagna</string>
+    <string name="app_name">UI Layouts</string>
+    <string name="enter_something">Enter something</string>
+    <string name="info">Info</string>
+    <string name="cities">Cities</string>
+    <string name="movies">Movies</string>
+    <string name="parks">Parks</string>
+    <string name="traffic">Traffic</string>
+
 </resources>
