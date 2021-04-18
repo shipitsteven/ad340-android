@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+    <GridLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin='10dp'
+        android:columnCount="2"
+        android:rowCount="3">
+
+        <EditText
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_columnWeight="1"
+            android:layout_gravity="fill"
+            android:layout_margin="10dp"
+            android:autofillHints="enter something"
+            android:hint="@string/enter_something"
+            android:inputType="text"
+            tools:ignore="LabelFor" />
+
+        <Button
+            android:id="@+id/btnInfo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_columnWeight='1'
+            android:layout_gravity="start"
+            android:layout_margin="10dp"
+            android:text="@string/info" />
+
+        <Button
+            android:id="@+id/btnCities"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_columnWeight="1"
+            android:layout_gravity="fill_horizontal"
+            android:layout_margin="10sp"
+            android:gravity="center"
+            android:onClick="btnClicked"
+            android:text="@string/cities"
+            tools:ignore="ButtonStyle" />
+
+        <Button
+            android:id="@+id/btnMovies"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_columnWeight="1"
+            android:layout_gravity="fill_horizontal"
+            android:layout_margin="10dp"
+            android:gravity="center"
+            android:onClick="btnClicked"
+            android:text="@string/movies"
+            tools:ignore="ButtonStyle" />
+
+        <Button
+            android:id="@+id/btnParks"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_columnWeight="1"
+            android:layout_gravity="fill_horizontal"
+            android:layout_margin="10dp"
+            android:gravity="center"
+            android:onClick="btnClicked"
+            android:text="@string/parks"
+            tools:ignore="ButtonStyle" />
+
+        <Button
+            android:id="@+id/btnTraffic"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_columnWeight="1"
+            android:layout_gravity="fill_horizontal"
+            android:layout_margin="10dp"
+            android:gravity="center"
+            android:onClick="btnClicked"
+            android:text="@string/traffic"
+            tools:ignore="ButtonStyle" />
+
+
+    </GridLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
