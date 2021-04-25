@@ -32,7 +32,7 @@ class MainActivity : AppCompatActivity() {
         val buttonText: String = (view as Button).text as String
         val toastMessage: String = when (buttonText) {
             "Cities" -> "Seattle is the best city"
-            "Movies" -> "Avatar is the highest grossing film of all time"
+//            "Movies" -> "Avatar is the highest grossing film of all time"
             "Parks" -> "Discovery Park is Seattle's biggest park"
             "Traffic" -> "The new Link/Light rail hopes to solve Seattle's traffic problem"
             else -> "Something went wrong."

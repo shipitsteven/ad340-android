@@ -8,7 +8,10 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.squareup.picasso.Picasso
 
-class MoviesAdapter(private val moviesList: Array<Array<String>>) : RecyclerView.Adapter<MoviesAdapter.MoviesViewHolder>() {
+class MoviesAdapter(
+    private val moviesList: Array<Array<String>>,
+    private val listener: OnItemClickListener
+) : RecyclerView.Adapter<MoviesAdapter.MoviesViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MoviesViewHolder {
         val itemView =
@@ -22,17 +25,31 @@ class MoviesAdapter(private val moviesList: Array<Array<String>>) : RecyclerView
 
         holder.title.text = currentItem[0]
         holder.year.text = currentItem[1]
-//        Picasso.get().setLoggingEnabled(true)
-//        Picasso.get().setIndicatorsEnabled(true)
         Picasso.get().load(currentItem[3]).into(holder.image)
         holder.image.contentDescription = currentItem[0]
     }
 
     override fun getItemCount() = moviesList.size
 
-    class MoviesViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    inner class MoviesViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView),
+        View.OnClickListener {
         val title: TextView = itemView.findViewById(R.id.text_movie_title)
         val year: TextView = itemView.findViewById(R.id.text_movie_year)
         val image: ImageView = itemView.findViewById(R.id.image_movie)
+
+        init {
+            itemView.setOnClickListener(this)
+        }
+
+        override fun onClick(v: View?) {
+            val position = bindingAdapterPosition
+            if (position != RecyclerView.NO_POSITION) {
+                listener.onItemClick(position)
+            }
+        }
+    }
+
+    interface OnItemClickListener {
+        fun onItemClick(position: Int)
     }
 }
