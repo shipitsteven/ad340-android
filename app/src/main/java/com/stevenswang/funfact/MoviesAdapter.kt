@@ -25,6 +25,7 @@ class MoviesAdapter(
 
         holder.title.text = currentItem[0]
         holder.year.text = currentItem[1]
+//        Picasso.get().isLoggingEnabled = true
         Picasso.get().load(currentItem[3]).into(holder.image)
         holder.image.contentDescription = currentItem[0]
     }

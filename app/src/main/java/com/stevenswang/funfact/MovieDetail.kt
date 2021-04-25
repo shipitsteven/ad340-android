@@ -18,6 +18,7 @@ class MovieDetail : AppCompatActivity() {
 
         findViewById<TextView>(R.id.text_detail_title).text = info?.get(0)
         findViewById<TextView>(R.id.text_detail_year).text = info?.get(1)
+//        Picasso.get().isLoggingEnabled = true
         Picasso.get().load(info?.get(3)).into(image)
         image.contentDescription = info?.get(0)
         findViewById<TextView>(R.id.text_detail_description).text = info?.get(4)

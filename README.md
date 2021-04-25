@@ -1,9 +1,10 @@
-# My First Android App
+# Currently on: HW3 Zombie Activity
 
-It's cheesy, it's moist, it's meaty. It was the most delicious lasagna I've ever had.  
+Practice rendering list and navigation with RecycleView, Adapter, Intent, Bundle and Picasso
 
 Screenshot:  
 
-![Screen shot of the app](firstApp.png)
+![movie list](movie-list.png)
+![movie detail](movie-detail.png)
 
 > This is a homework project for AD340 Android Development @ North Seattle College, Spring 2021
