@@ -1,9 +1,10 @@
 <resources>
-    <string name="app_name">UI Layouts</string>
+    <string name="app_name">Interdimensional Cable</string>
     <string name="enter_something">Enter something</string>
     <string name="info">Info</string>
     <string name="cities">Cities</string>
     <string name="movies">Movies</string>
     <string name="parks">Parks</string>
     <string name="traffic">Traffic</string>
+    <string name="placeholder">placeholder</string>
 </resources>
