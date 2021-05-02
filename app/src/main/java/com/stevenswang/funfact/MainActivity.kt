@@ -26,6 +26,11 @@ class MainActivity : AppCompatActivity() {
             val intent = Intent(this, Movies::class.java)
             startActivity(intent)
         }
+
+        binding.btnTraffic.setOnClickListener {
+            val intent = Intent(this, Traffic::class.java)
+            startActivity(intent)
+        }
     }
 
     fun btnClicked(view: View) {
@@ -34,7 +39,7 @@ class MainActivity : AppCompatActivity() {
             "Cities" -> "Seattle is the best city"
 //            "Movies" -> "Avatar is the highest grossing film of all time"
             "Parks" -> "Discovery Park is Seattle's biggest park"
-            "Traffic" -> "The new Link/Light rail hopes to solve Seattle's traffic problem"
+//            "Traffic" -> "The new Link/Light rail hopes to solve Seattle's traffic problem"
             else -> "Something went wrong."
         }
 
