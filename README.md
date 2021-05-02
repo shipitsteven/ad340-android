@@ -4,9 +4,9 @@ Practice making API requests with Retrofit & GSON, model JSON response into Kotl
 
 Screenshots:
 
-![traffic cams](screenshots/traffic-cams.png)
-![traffic loading](screenshots/traffic-loading.png)
-![traffic failure](screenshots/traffic-no-connection.png)
+<img src="screenshots/traffic-cams.png" width="300xp"/>
+<img src="screenshots/traffic-loading.png" width="300px" />
+<img src="screenshots/traffic-no-connection.png" width="300px" />
 
 ---------
 
@@ -16,8 +16,8 @@ Practice rendering list and navigation with RecycleView, Adapter, Intent, Bundle
 
 Screenshots:  
 
-![movie list](screenshots/movie-list.png)
-![movie detail](screenshots/movie-details.png)
+<img src="screenshots/movie-list.png" width="300px" />
+<img src="screenshots/movie-details.png" width="300px" />
 
 ---------
 
@@ -25,6 +25,6 @@ Screenshots:
 
 Practice positioning UI elements with XML, GridLayout, and button functionality through onClickListener and Toast
 
-![main screen](screenshots/main.png)
+<img src="screenshots/main.png" width="300px" />
 
 > This is a homework project for AD340 Android Development @ North Seattle College, Spring 2021
