@@ -14,17 +14,15 @@
             android:id="@+id/text_traffic_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
-            android:text="42nd Ave SW &amp; SW Alaska St"
+            android:layout_marginStart="10dp"
             android:textSize="22sp"
             android:textStyle="bold" />
 
         <ImageView
             android:id="@+id/image_traffic"
             android:layout_width="wrap_content"
-            android:layout_height="150dp"
+            android:layout_height="wrap_content"
             android:layout_below="@id/text_traffic_title"
-            android:src="@drawable/lasagna"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="5dp"
             android:layout_marginBottom="5dp"

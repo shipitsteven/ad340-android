@@ -1,33 +1,29 @@
 package com.stevenswang.funfact
 
-import android.content.Context
 import android.net.ConnectivityManager
-import android.net.LinkProperties
-import android.net.Network
 import android.net.NetworkCapabilities
 import android.os.Bundle
-import android.util.Log
+import android.widget.ProgressBar
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import kotlinx.coroutines.*
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
+import retrofit2.awaitResponse
 
+const val BASE_URL = "https://web6.seattle.gov/Travelers/api/Map/"
 
 class Traffic : AppCompatActivity() {
-
-    private val tag = "Network state"
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_traffic)
-        val recyclerTraffic = findViewById<RecyclerView>(R.id.recycler_traffic)
-        recyclerTraffic.adapter = TrafficAdapter()
-        recyclerTraffic.layoutManager = LinearLayoutManager(this)
-        recyclerTraffic.setHasFixedSize(true)
         getNetworkState()
     }
-
 
     private fun getNetworkState() {
         val connectivityManager = getSystemService(ConnectivityManager::class.java)
@@ -35,29 +31,44 @@ class Traffic : AppCompatActivity() {
         val caps = connectivityManager.getNetworkCapabilities(currentNetwork)
         val initNetworkState = caps?.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
         if (initNetworkState == true) {
-            // TODO: start fetching data
-            Toast.makeText(applicationContext, "Connected to the internet", Toast.LENGTH_SHORT).show()
+            val recyclerTraffic = findViewById<RecyclerView>(R.id.recycler_traffic)
+            callAPI(recyclerTraffic)
         } else {
-            // TODO: SHOW some UI that indicate no internet connection
-            Toast.makeText(applicationContext, "No internet connection", Toast.LENGTH_LONG).show()
+            updateUINoInternet()
         }
+    }
 
-        connectivityManager.registerDefaultNetworkCallback(object : ConnectivityManager.NetworkCallback() {
+    @DelicateCoroutinesApi
+    private fun callAPI(recyclerView: RecyclerView) {
+        val api = Retrofit.Builder()
+            .baseUrl(BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(ApiRequest::class.java)
 
-            override fun onLost(network : Network) {
-                Log.e(tag,
-                    "The application no longer has a default network. The last default network was $network"
-                )
-                Toast.makeText(applicationContext, "Network connection lost", Toast.LENGTH_LONG).show()
-            }
+        GlobalScope.launch(Dispatchers.IO) {
+            val response = api.getCamData().awaitResponse()
+            if (response.isSuccessful) {
+                val data = response.body()!!
 
-            override fun onCapabilitiesChanged(network : Network, networkCapabilities : NetworkCapabilities) {
-                val hasInternet = networkCapabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
-                if(hasInternet) {
-                    Toast.makeText(applicationContext, "Changed connection capabilities", Toast.LENGTH_SHORT).show()
+                withContext(Dispatchers.Main) {
+                    val progressBar = findViewById<ProgressBar>(R.id.progress_traffic)
+                    val loadingText = findViewById<TextView>(R.id.text_loading_traffic)
+                    progressBar.isVisible = false
+                    loadingText.isVisible = false
+                    recyclerView.adapter = TrafficAdapter(data)
+                    recyclerView.layoutManager = LinearLayoutManager(applicationContext)
+                    recyclerView.setHasFixedSize(true)
                 }
-                Log.e(tag, "The default network changed capabilities: $networkCapabilities")
             }
-        })
+        }
+    }
+
+    private fun updateUINoInternet() {
+        Toast.makeText(applicationContext, "No internet connection", Toast.LENGTH_LONG).show()
+        val progressBar = findViewById<ProgressBar>(R.id.progress_traffic)
+        val loadingText = findViewById<TextView>(R.id.text_loading_traffic)
+        progressBar.isVisible = false
+        loadingText.text = getString(R.string.NoInternetTraffic)
     }
 }

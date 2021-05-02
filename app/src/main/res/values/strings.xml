@@ -7,4 +7,6 @@
     <string name="parks">Parks</string>
     <string name="traffic">Traffic</string>
     <string name="placeholder">placeholder</string>
+    <string name="Loading">Loading data from the internet...</string>
+    <string name="NoInternetTraffic">Sorry, you must be connected to the internet to see live traffic cameras</string>
 </resources>
