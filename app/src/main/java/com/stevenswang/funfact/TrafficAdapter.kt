@@ -7,11 +7,11 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.squareup.picasso.Picasso
-import com.stevenswang.funfact.model.TrafficResponse
+import com.stevenswang.funfact.model.Camera
 
 const val IMAGE_BASE_URL = "https://www.seattle.gov/trafficcams/images/"
 
-class TrafficAdapter(private val apiResponse: TrafficResponse) :
+class TrafficAdapter(private val apiResponse: Camera) :
     RecyclerView.Adapter<TrafficAdapter.TrafficViewHolder>() {
 
     inner class TrafficViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
