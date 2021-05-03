@@ -9,4 +9,8 @@
     <string name="placeholder">placeholder</string>
     <string name="Loading">Loading data from the internet...</string>
     <string name="NoInternetTraffic">Sorry, you must be connected to the internet to see live traffic cameras</string>
+    <string name="fetchError">Error occured while fetching data, please try again later</string>
+    <string name="badJSON">Error occured: unexpected response format</string>
+    <string name="unknownError">Unknown error occured</string>
+    <string name="badURL">Error occured: bad resource URL</string>
 </resources>

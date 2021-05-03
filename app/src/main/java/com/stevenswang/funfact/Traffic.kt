@@ -14,6 +14,9 @@ import kotlinx.coroutines.*
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.awaitResponse
+import java.io.EOFException
+import java.io.IOException
+import java.lang.Exception
 
 const val BASE_URL = "https://web6.seattle.gov/Travelers/api/Map/"
 
@@ -38,7 +41,6 @@ class Traffic : AppCompatActivity() {
         }
     }
 
-    @DelicateCoroutinesApi
     private fun callAPI(recyclerView: RecyclerView) {
         val api = Retrofit.Builder()
             .baseUrl(BASE_URL)
@@ -46,21 +48,34 @@ class Traffic : AppCompatActivity() {
             .build()
             .create(ApiRequest::class.java)
 
-        GlobalScope.launch(Dispatchers.IO) {
-            val response = api.getCamData().awaitResponse()
-            if (response.isSuccessful) {
-                val data = response.body()!!
-
+        CoroutineScope(Dispatchers.IO).launch {
+            val progressBar = findViewById<ProgressBar>(R.id.progress_traffic)
+            val loadingText = findViewById<TextView>(R.id.text_loading_traffic)
+            try {
+                val response = api.getCamData().awaitResponse()
+                if (response.isSuccessful) {
+                    val data = response.body()!!
+                    withContext(Dispatchers.Main) {
+                        loadingText.isVisible = false
+                        recyclerView.adapter = TrafficAdapter(data)
+                        recyclerView.layoutManager = LinearLayoutManager(applicationContext)
+                        recyclerView.setHasFixedSize(true)
+                    }
+                } else {
+                    withContext(Dispatchers.Main) {
+                        loadingText.text = getString(R.string.fetchError)
+                    }
+                }
+            } catch (e: EOFException) {
+                withContext(Dispatchers.Main) { loadingText.text = getString(R.string.badURL) }
+            } catch (e: IOException) {
+                withContext(Dispatchers.Main) { loadingText.text = getString(R.string.badJSON) }
+            } catch (e: Exception) {
                 withContext(Dispatchers.Main) {
-                    val progressBar = findViewById<ProgressBar>(R.id.progress_traffic)
-                    val loadingText = findViewById<TextView>(R.id.text_loading_traffic)
-                    progressBar.isVisible = false
-                    loadingText.isVisible = false
-                    recyclerView.adapter = TrafficAdapter(data)
-                    recyclerView.layoutManager = LinearLayoutManager(applicationContext)
-                    recyclerView.setHasFixedSize(true)
+                    loadingText.text = getString(R.string.unknownError)
                 }
             }
+            withContext(Dispatchers.Main) { progressBar.isVisible = false }
         }
     }
 
