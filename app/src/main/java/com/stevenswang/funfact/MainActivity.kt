@@ -31,6 +31,11 @@ class MainActivity : AppCompatActivity() {
             val intent = Intent(this, Traffic::class.java)
             startActivity(intent)
         }
+
+        binding.btnMap.setOnClickListener {
+            val intent = Intent(this, MapsActivity::class.java)
+            startActivity(intent)
+        }
     }
 
     fun btnClicked(view: View) {

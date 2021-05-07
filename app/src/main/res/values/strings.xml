@@ -13,4 +13,5 @@
     <string name="badJSON">Error occured: unexpected response format</string>
     <string name="unknownError">Unknown error occured</string>
     <string name="badURL">Error occured: bad resource URL</string>
+    <string name="title_activity_maps">Map</string>
 </resources>

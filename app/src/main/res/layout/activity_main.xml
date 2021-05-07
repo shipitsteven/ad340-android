@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".MainActivity">
 
     <GridLayout
@@ -52,7 +53,6 @@
             android:layout_gravity="fill_horizontal"
             android:layout_margin="10dp"
             android:gravity="center"
-            android:onClick="btnClicked"
             android:text="@string/movies"
             tools:ignore="ButtonStyle" />
 
@@ -76,9 +76,25 @@
             android:layout_gravity="fill_horizontal"
             android:layout_margin="10dp"
             android:gravity="center"
-            android:onClick="btnClicked"
             android:text="@string/traffic"
             tools:ignore="ButtonStyle" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnMap"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_columnWeight="1"
+            android:layout_gravity="fill_horizontal"
+            android:layout_margin="10dp"
+            android:gravity="center"
+            android:onClick="btnClicked"
+            android:text="Map"
+            app:icon="@drawable/mapicon"
+            app:iconPadding="0dp"
+            app:iconTint="@null"
+            app:iconSize="20dp"
+            tools:ignore="ButtonStyle" >
+        </com.google.android.material.button.MaterialButton>
 
 
     </GridLayout>
