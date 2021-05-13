@@ -1,12 +1,15 @@
 package com.stevenswang.funfact
 
 import android.content.pm.PackageManager
+import android.location.Location
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
 
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -22,12 +25,15 @@ import kotlinx.coroutines.withContext
 import retrofit2.Retrofit
 import retrofit2.awaitResponse
 import retrofit2.converter.gson.GsonConverterFactory
+import java.lang.Exception
 
 class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private lateinit var mMap: GoogleMap
     private lateinit var binding: ActivityMapsBinding
     private val FINE_LOCATION_RQ = 101
+    private lateinit var fusedLocationClient: FusedLocationProviderClient
+    private lateinit var currentLocation: Location
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,6 +50,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
             "location",
             FINE_LOCATION_RQ
         )
+
     }
 
     /**
@@ -66,6 +73,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
     private fun checkForPermissions(permission: String, name: String, requestCode: Int) {
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
         when {
             ContextCompat.checkSelfPermission(
                 applicationContext,
@@ -77,6 +85,18 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
                     "$name permission granted from check",
                     Toast.LENGTH_SHORT
                 ).show()
+                fusedLocationClient.lastLocation
+                    .addOnSuccessListener { location : Location? ->
+                        // Got last known location. In some rare situations this can be null.
+                        if (location != null) {
+                            currentLocation = location
+                            mMap.isMyLocationEnabled = true
+                        }
+                    }.addOnFailureListener{
+                        currentLocation = Location("")
+                        currentLocation.latitude = 47.516783365445
+                        currentLocation.longitude = -122.392755787503
+                    }
             }
             shouldShowRequestPermissionRationale(permission) -> showDialog(
                 permission,
@@ -118,6 +138,9 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
                     "$name permission refused from grant",
                     Toast.LENGTH_SHORT
                 ).show()
+                currentLocation = Location("")
+                currentLocation.latitude = 47.516783365445
+                currentLocation.longitude = -122.392755787503
             } else {
                 Toast.makeText(
                     applicationContext,
@@ -157,10 +180,18 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
                     }
 
                     // TODO: moving camera center is a little funky
-                    val seattle = LatLng(47.516783365445, -122.392755787503
+                    val seattle = LatLng(
+                        47.516783365445, -122.392755787503
                     )
-                    mMap.moveCamera(CameraUpdateFactory.zoomTo(10f))
-                    mMap.moveCamera(CameraUpdateFactory.newLatLng(seattle))
+                    // FIXME: lateinit property currentLocation has not been initialized
+                    // TODO: replace this janky fix
+                    val myLocation = try {
+                        LatLng(currentLocation.latitude, currentLocation.longitude)
+                    } catch (e: Exception) {
+                        seattle
+                    }
+                    mMap.moveCamera(CameraUpdateFactory.newLatLng(myLocation))
+                    mMap.moveCamera(CameraUpdateFactory.zoomTo(12f))
                 }
             }
         }
