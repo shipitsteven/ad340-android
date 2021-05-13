@@ -15,9 +15,15 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.stevenswang.funfact.databinding.ActivityMapsBinding
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import retrofit2.Retrofit
+import retrofit2.awaitResponse
+import retrofit2.converter.gson.GsonConverterFactory
 
-class MapsActivity : AppCompatActivity(), OnMapReadyCallback
-{
+class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private lateinit var mMap: GoogleMap
     private lateinit var binding: ActivityMapsBinding
@@ -33,7 +39,11 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback
         val mapFragment = supportFragmentManager
             .findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
-        checkForPermissions(android.Manifest.permission.ACCESS_FINE_LOCATION, "location", FINE_LOCATION_RQ)
+        checkForPermissions(
+            android.Manifest.permission.ACCESS_FINE_LOCATION,
+            "location",
+            FINE_LOCATION_RQ
+        )
     }
 
     /**
@@ -52,15 +62,27 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback
         val sydney = LatLng(-34.0, 151.0)
         mMap.addMarker(MarkerOptions().position(sydney).title("Marker in Sydney"))
         mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney))
+        getLocationData(mMap)
     }
 
     private fun checkForPermissions(permission: String, name: String, requestCode: Int) {
         when {
-            ContextCompat.checkSelfPermission(applicationContext, permission) == PackageManager.PERMISSION_GRANTED -> {
+            ContextCompat.checkSelfPermission(
+                applicationContext,
+                permission
+            ) == PackageManager.PERMISSION_GRANTED -> {
                 // TODO: add markers here?
-                Toast.makeText(applicationContext, "$name permission granted from check", Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    applicationContext,
+                    "$name permission granted from check",
+                    Toast.LENGTH_SHORT
+                ).show()
             }
-            shouldShowRequestPermissionRationale(permission) -> showDialog(permission, name, requestCode)
+            shouldShowRequestPermissionRationale(permission) -> showDialog(
+                permission,
+                name,
+                requestCode
+            )
 
             else -> ActivityCompat.requestPermissions(this, arrayOf(permission), requestCode)
         }
@@ -73,7 +95,11 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback
             setMessage("Permission to access your $name is required to use this function")
             setTitle("Permission required")
             setPositiveButton("OK") { dialog, which ->
-                ActivityCompat.requestPermissions(this@MapsActivity, arrayOf(permission), requestCode)
+                ActivityCompat.requestPermissions(
+                    this@MapsActivity,
+                    arrayOf(permission),
+                    requestCode
+                )
             }
         }
         val dialog = builder.create()
@@ -87,10 +113,17 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback
     ) {
         fun innerCheck(name: String) {
             if (grantResults.isEmpty() || grantResults[0] != PackageManager.PERMISSION_GRANTED) {
-                Toast.makeText(applicationContext, "$name permission refused from grant", Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    applicationContext,
+                    "$name permission refused from grant",
+                    Toast.LENGTH_SHORT
+                ).show()
             } else {
-                // TODO: add logic to init add marker
-                Toast.makeText(applicationContext, "$name permission granted from grant", Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    applicationContext,
+                    "$name permission granted from grant",
+                    Toast.LENGTH_SHORT
+                ).show()
             }
         }
 
@@ -98,4 +131,39 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback
             FINE_LOCATION_RQ -> innerCheck("location")
         }
     }
+
+    private fun getLocationData(map: GoogleMap) {
+        // TODO: can be refactored to extract the api request creation step
+        val api = Retrofit.Builder()
+            .baseUrl(BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(ApiRequest::class.java)
+
+        CoroutineScope(Dispatchers.IO).launch {
+            val response = api.getCamData().awaitResponse()
+            if (response.isSuccessful) {
+                val data = response.body()!!
+                withContext(Dispatchers.Main) {
+                    // TODO: refactor to extract map logic out to a separate function
+                    mMap.clear()
+                    for (index: Int in data.Features.indices) {
+                        val locationArray = data.Features[index].PointCoordinate
+                        val location = LatLng(locationArray[0], locationArray[1])
+                        mMap.addMarker(
+                            MarkerOptions().position(location)
+                                .title(data.Features[index].Cameras[0].Description)
+                        )
+                    }
+
+                    // TODO: moving camera center is a little funky
+                    val seattle = LatLng(47.516783365445, -122.392755787503
+                    )
+                    mMap.moveCamera(CameraUpdateFactory.zoomTo(10f))
+                    mMap.moveCamera(CameraUpdateFactory.newLatLng(seattle))
+                }
+            }
+        }
+    }
 }
+
