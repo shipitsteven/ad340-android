@@ -42,11 +42,7 @@ class Traffic : AppCompatActivity() {
     }
 
     private fun callAPI(recyclerView: RecyclerView) {
-        val api = Retrofit.Builder()
-            .baseUrl(BASE_URL)
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-            .create(ApiRequest::class.java)
+        val api = ApiObject.getApiObject()!!
 
         CoroutineScope(Dispatchers.IO).launch {
             val progressBar = findViewById<ProgressBar>(R.id.progress_traffic)
