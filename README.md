@@ -1,10 +1,21 @@
-# Currently on: HW 4 Live Cams
+# Currently on: HW 5 Location, Location, Location
 
-Practice making API requests with Retrofit & GSON, model JSON response into Kotlin Data Classes, checking network status and handling graceful failure
+Practice integrating Google Map fragment, requesting user permission at runtime, accessing device location, and using Geocoder to transform LatLng into addresses
 
 Screenshots:
 
-<img src="screenshots/traffic-cams.png" width="300xp"/>
+<img src="screenshots/map.png" width="300px" />
+<img src="screenshots/map-permission.png" width="300px" />
+
+--------
+
+## HW 4 Live Cams
+
+Practice making API requests with Retrofit & GSON, model JSON response into Kotlin Data Classes, checking network status and handling failure gracefully
+
+Screenshots:
+
+<img src="screenshots/traffic-cams.png" width="300px"/>
 <img src="screenshots/traffic-loading.png" width="300px" />
 <img src="screenshots/traffic-no-connection.png" width="300px" />
 
