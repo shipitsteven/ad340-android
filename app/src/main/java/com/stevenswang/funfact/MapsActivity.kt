@@ -2,10 +2,12 @@ package com.stevenswang.funfact
 
 import android.annotation.SuppressLint
 import android.content.pm.PackageManager
+import android.location.Geocoder
 import android.location.Location
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
@@ -19,47 +21,45 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
-import com.stevenswang.funfact.databinding.ActivityMapsBinding
+import com.google.android.libraries.places.api.Places
+import com.stevenswang.funfact.databinding.MapContainerBinding
 import com.stevenswang.funfact.model.Camera
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import retrofit2.awaitResponse
+import java.util.*
+
 
 class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private lateinit var mMap: GoogleMap
-    private lateinit var binding: ActivityMapsBinding
+    private lateinit var binding: MapContainerBinding
     private val FINE_LOCATION_RQ = 101
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityMapsBinding.inflate(layoutInflater)
+        binding = MapContainerBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
+        Places.initialize(applicationContext, BuildConfig.apiKey)
         val mapFragment = supportFragmentManager
             .findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
 
     }
 
-    /**
-     * Manipulates the map once available.
-     * This callback is triggered when the map is ready to be used.
-     * This is where we can add markers or lines, add listeners or move the camera. In this case,
-     * we just add a marker near Sydney, Australia.
-     * If Google Play services is not installed on the device, the user will be prompted to install
-     * it inside the SupportMapFragment. This method will only be triggered once the user has
-     * installed Google Play services and returned to the app.
-     */
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
         mMap.moveCamera(CameraUpdateFactory.zoomTo(12f))
         val seattle = LatLng(47.608013, -122.335167)
         mMap.moveCamera(CameraUpdateFactory.newLatLng(seattle))
-        getLocationData()
+        if (hasInternetConnection() == true) {
+            getLocationData()
+        } else {
+            uiDisplayError("No internet connection")
+        }
     }
 
     private fun checkForPermissions(permission: String, name: String, requestCode: Int) {
@@ -69,11 +69,6 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
                 applicationContext,
                 permission
             ) == PackageManager.PERMISSION_GRANTED -> {
-                Toast.makeText(
-                    applicationContext,
-                    "$name permission granted from check",
-                    Toast.LENGTH_SHORT
-                ).show()
                 getLastLocation(fusedLocationClient)
             }
             shouldShowRequestPermissionRationale(permission) -> showDialog(
@@ -87,17 +82,17 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private fun showDialog(permission: String, name: String, requestCode: Int) {
         val builder = AlertDialog.Builder(this)
-
         builder.apply {
-            setMessage("Permission to access your $name is required to use this function")
+            setMessage("$name permission is needed to provide you the best experience while using this app")
             setTitle("Permission required")
-            setPositiveButton("OK") { dialog, which ->
+            setPositiveButton("OK") { _, _ ->
                 ActivityCompat.requestPermissions(
                     this@MapsActivity,
                     arrayOf(permission),
                     requestCode
                 )
             }
+            setCancelable(false)
         }
         val dialog = builder.create()
         dialog.show()
@@ -110,11 +105,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     ) {
         fun innerCheck(name: String) {
             if (grantResults.isEmpty() || grantResults[0] != PackageManager.PERMISSION_GRANTED) {
-                Toast.makeText(
-                    applicationContext,
-                    "$name permission refused from grant",
-                    Toast.LENGTH_SHORT
-                ).show()
+                uiDisplayError("$name permission required")
             } else {
                 val fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
                 getLastLocation(fusedLocationClient)
@@ -127,7 +118,6 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private fun getLocationData() {
         val api = ApiObject.getApiObject()!!
-
         CoroutineScope(Dispatchers.IO).launch {
             val response = api.getCamData().awaitResponse()
             if (response.isSuccessful) {
@@ -184,6 +174,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
                 // Got last known location. In some rare situations this can be null.
                 if (location != null) {
                     moveMapCameraToUser(location)
+                    displayAddressFromLocation(location)
                 } else {
                     Toast.makeText(
                         applicationContext,
@@ -198,6 +189,36 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
                     Toast.LENGTH_LONG
                 ).show()
             }
+    }
+
+    private fun uiDisplayError(cause: String) {
+        Toast.makeText(
+            applicationContext,
+            cause,
+            Toast.LENGTH_SHORT
+        ).show()
+        binding.textAddressContent.text = cause
+        binding.textLatContent.text = "n/a"
+        binding.textLngContent.text = "n/a"
+    }
+
+    private fun hasInternetConnection(): Boolean? {
+        val connectivityManager = getSystemService(ConnectivityManager::class.java)
+        val currentNetwork = connectivityManager.activeNetwork
+        val caps = connectivityManager.getNetworkCapabilities(currentNetwork)
+        val initNetworkState = caps?.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
+        return initNetworkState
+    }
+
+    private fun displayAddressFromLocation(location: Location) {
+        val addresses = Geocoder(applicationContext, Locale.US).getFromLocation(
+            location.latitude,
+            location.longitude,
+            3
+        )
+        binding.textAddressContent.text = addresses[0].getAddressLine(0)
+        binding.textLatContent.text = location.latitude.toString()
+        binding.textLngContent.text = location.longitude.toString()
     }
 }
 

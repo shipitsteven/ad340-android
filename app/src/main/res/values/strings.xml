@@ -7,11 +7,15 @@
     <string name="parks">Parks</string>
     <string name="traffic">Traffic</string>
     <string name="placeholder">placeholder</string>
-    <string name="Loading">Loading data from the internet...</string>
+    <string name="Loading">Loading data from the internet…</string>
     <string name="NoInternetTraffic">Sorry, you must be connected to the internet to see live traffic cameras</string>
-    <string name="fetchError">Error occured while fetching data, please try again later</string>
-    <string name="badJSON">Error occured: unexpected response format</string>
-    <string name="unknownError">Unknown error occured</string>
-    <string name="badURL">Error occured: bad resource URL</string>
+    <string name="fetchError">Error occurred while fetching data, please try again later</string>
+    <string name="badJSON">Error occurred: unexpected response format</string>
+    <string name="unknownError">Unknown error occurred</string>
+    <string name="badURL">Error occurred: bad resource URL</string>
     <string name="title_activity_maps">Map</string>
+    <string name="loading">loading…</string>
+    <string name="locationTitle">Location:\u0020</string>
+    <string name="latitudeTitle">Latitude:\u0020</string>
+    <string name="longitudeTitle">Longitude:\u0020</string>
 </resources>
