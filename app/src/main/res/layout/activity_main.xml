@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".MainActivity">
 
     <GridLayout
@@ -11,27 +11,71 @@
         android:layout_height="match_parent"
         android:layout_margin='10dp'
         android:columnCount="2"
-        android:rowCount="3">
+        android:rowCount="7">
 
-        <EditText
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_columnWeight="1"
-            android:layout_gravity="fill"
-            android:layout_margin="10dp"
-            android:autofillHints="enter something"
-            android:hint="@string/enter_something"
-            android:inputType="text"
-            tools:ignore="LabelFor" />
+        <com.google.android.material.textfield.TextInputLayout
 
-        <Button
-            android:id="@+id/btnInfo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_columnSpan="2"
+            android:layout_columnWeight="01"
+            app:errorEnabled="true">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/text_input_username"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:autofillHints="enter something"
+                android:hint="@string/username"
+                android:inputType="text" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_columnSpan="2"
+            android:layout_columnWeight="01"
+            app:errorEnabled="true">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/text_input_email"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:autofillHints="enter something"
+                android:hint="@string/email"
+                android:inputType="textEmailAddress" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_columnSpan="2"
+            android:layout_columnWeight="01"
+            app:errorEnabled="true"
+            app:passwordToggleEnabled="true">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/text_input_password"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:autofillHints="enter something"
+                android:hint="@string/password"
+                android:inputType="textPassword" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <Button
+            android:id="@+id/btnLogin"
+            android:layout_width="200dp"
+            android:layout_height="60dp"
+            android:layout_columnSpan="2"
             android:layout_columnWeight='1'
-            android:layout_gravity="start"
+            android:layout_gravity="center_horizontal"
             android:layout_margin="10dp"
-            android:text="@string/info" />
+            android:backgroundTint="@color/quantum_teal"
+            android:text="@string/login" />
 
         <Button
             android:id="@+id/btnCities"
@@ -88,13 +132,12 @@
             android:layout_margin="10dp"
             android:gravity="center"
             android:onClick="btnClicked"
-            android:text="Map"
+            android:text="@string/map"
             app:icon="@drawable/mapicon"
             app:iconPadding="0dp"
-            app:iconTint="@null"
             app:iconSize="20dp"
-            tools:ignore="ButtonStyle" >
-        </com.google.android.material.button.MaterialButton>
+            app:iconTint="@null"
+            tools:ignore="ButtonStyle" />
 
 
     </GridLayout>
