@@ -9,7 +9,8 @@ import android.widget.Button
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.textfield.TextInputEditText
-import com.google.android.material.textfield.TextInputLayout
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.UserProfileChangeRequest
 import com.stevenswang.funfact.databinding.ActivityMainBinding
 
 
@@ -26,8 +27,8 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         binding.btnLogin.setOnClickListener {
-            if(validateEmail(textInputEmail.text.toString().trim())) {
-                Toast.makeText(applicationContext, "Valid email, good job", Toast.LENGTH_SHORT).show()
+            if (validateEmail(textInputEmail.text.toString().trim())) {
+                signIn()
             }
         }
 
@@ -68,13 +69,57 @@ class MainActivity : AppCompatActivity() {
         if (email.isBlank()) {
             textInputEmail.error = "Email cannot be empty"
             return false
-        } else if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()){
+        } else if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
             textInputEmail.error = "Please enter a valid email address"
             return false
         } else {
             textInputEmail.error = null
             return true
         }
+    }
+
+    private fun signIn() {
+        Log.d("FIREBASE", "signIn")
+
+        // 1 - validate name, email, and password entries
+
+        // 2 - save valid entries to shared preferences
+
+        // 3 - sign into Firebase
+        val mAuth = FirebaseAuth.getInstance()
+        mAuth.signInWithEmailAndPassword(textInputEmail.text.toString(), textInputPassword.text.toString())
+            .addOnCompleteListener(
+                this
+            ) { task ->
+                Log.e("FIREBASE", "signIn:onComplete:" + task.isSuccessful)
+                if (task.isSuccessful) {
+                    // update profile
+                    val user = FirebaseAuth.getInstance().currentUser
+                    val profileUpdates = UserProfileChangeRequest.Builder()
+                        .setDisplayName(textInputUsername.text.toString())
+                        .build()
+                    user!!.updateProfile(profileUpdates)
+                        .addOnCompleteListener { task ->
+                            if (task.isSuccessful) {
+                                Log.e("FIREBASE", "User profile updated.")
+                                // Go to FirebaseActivity
+                                startActivity(
+                                    Intent(
+                                        this@MainActivity,
+                                        FirebaseActivity::class.java
+                                    )
+                                )
+                            }
+                        }
+                } else {
+                    Log.e("FIREBASE", "sign-in failed")
+                    Toast.makeText(
+                        this@MainActivity, "Sign In Failed",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    Log.e("task", task.result.toString())
+                }
+            }
     }
 
 
