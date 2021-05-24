@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "918571089084",
+    "firebase_url": "https://ad340-24b27.firebaseio.com",
+    "project_id": "ad340-24b27",
+    "storage_bucket": "ad340-24b27.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:740370175424:android:5b806bdc9f69743f9ca425",
+        "android_client_info": {
+          "package_name": "com.stevenswang.funfact"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "740370175424-16536m9tld9mn9p1hvb62p06hpuaal51.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCvMD1G4-l9ahX0r9Jwb-1W3sohJA1-6NY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "740370175424-16536m9tld9mn9p1hvb62p06hpuaal51.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
