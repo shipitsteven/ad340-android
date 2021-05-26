@@ -117,7 +117,7 @@ class MainActivity : AppCompatActivity() {
                         this@MainActivity, "Sign In Failed",
                         Toast.LENGTH_SHORT
                     ).show()
-                    Log.e("task", task.result.toString())
+                    Log.e("task", task.exception.toString())
                 }
             }
     }
