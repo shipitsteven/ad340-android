@@ -6,4 +6,12 @@
     android:layout_height="match_parent"
     tools:context=".FirebaseActivity">
 
+    <ListView
+        android:id="@+id/userList"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        tools:listitem="@layout/user_item"
+        />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

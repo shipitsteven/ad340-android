@@ -87,7 +87,10 @@ class MainActivity : AppCompatActivity() {
 
         // 3 - sign into Firebase
         val mAuth = FirebaseAuth.getInstance()
-        mAuth.signInWithEmailAndPassword(textInputEmail.text.toString(), textInputPassword.text.toString())
+        mAuth.signInWithEmailAndPassword(
+            textInputEmail.text.toString(),
+            textInputPassword.text.toString()
+        )
             .addOnCompleteListener(
                 this
             ) { task ->
@@ -103,12 +106,7 @@ class MainActivity : AppCompatActivity() {
                             if (task.isSuccessful) {
                                 Log.e("FIREBASE", "User profile updated.")
                                 // Go to FirebaseActivity
-                                startActivity(
-                                    Intent(
-                                        this@MainActivity,
-                                        FirebaseActivity::class.java
-                                    )
-                                )
+                                startActivity(Intent(this, FirebaseActivity::class.java))
                             }
                         }
                 } else {
