@@ -1,5 +1,6 @@
 package com.stevenswang.funfact
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -50,6 +51,11 @@ class MainActivity : AppCompatActivity() {
         textInputUsername = binding.textInputUsername
         textInputEmail = binding.textInputEmail
         textInputPassword = binding.textInputPassword
+
+        val savedInfo = readFromSharedPreference()
+        textInputEmail.setText(savedInfo[0])
+        textInputPassword.setText(savedInfo[1])
+        textInputUsername.setText(savedInfo[2])
     }
 
     fun btnClicked(view: View) {
@@ -96,6 +102,11 @@ class MainActivity : AppCompatActivity() {
             ) { task ->
                 Log.e("FIREBASE", "signIn:onComplete:" + task.isSuccessful)
                 if (task.isSuccessful) {
+                    writeToSharedPreference(
+                        textInputEmail.text.toString(),
+                        textInputPassword.text.toString(),
+                        textInputUsername.text.toString()
+                    )
                     // update profile
                     val user = FirebaseAuth.getInstance().currentUser
                     val profileUpdates = UserProfileChangeRequest.Builder()
@@ -118,6 +129,25 @@ class MainActivity : AppCompatActivity() {
                     Log.e("task", task.exception.toString())
                 }
             }
+    }
+
+    private fun writeToSharedPreference(email: String, password: String, username: String) {
+        val sharedPref = this.getPreferences(Context.MODE_PRIVATE) ?: return
+        with(sharedPref.edit()) {
+            putString("email", email)
+            putString("password", password)
+            putString("username", username)
+            apply()
+        }
+    }
+
+    private fun readFromSharedPreference(): List<String> {
+        val sharedPref = this.getPreferences(Context.MODE_PRIVATE)
+        val savedInfo: MutableList<String> = mutableListOf()
+        savedInfo.add(sharedPref.getString("email", "").toString())
+        savedInfo.add(sharedPref.getString("password", "").toString())
+        savedInfo.add(sharedPref.getString("username", "").toString())
+        return savedInfo
     }
 
 

@@ -23,8 +23,6 @@ class FirebaseActivity : AppCompatActivity() {
     var userData: ArrayList<User> = ArrayList<User>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        Log.e("Context", "Made it to firebase activity")
-
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_firebase)
 
@@ -40,14 +38,21 @@ class FirebaseActivity : AppCompatActivity() {
 
         // update database
         if (currentUser != null) {
-            writeNewUser(currentUser.uid, currentUser.displayName.toString(), currentUser.email.toString())
+            writeNewUser(
+                currentUser.uid,
+                currentUser.displayName.toString(),
+                currentUser.email.toString()
+            )
+            Log.e("Current display name", currentUser.displayName.toString())
+        } else {
+            Log.e("user", "Current user is null")
         }
 
-        // get list of users
 
         // get list of users
         myRef.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
+                Log.e("onDataChange", "On Data changed fired!")
                 for (userSnapshot in dataSnapshot.children) {
                     // TODO: handle the post
                     Log.e("UserSnapshot", userSnapshot.value.toString())
@@ -73,22 +78,23 @@ class FirebaseActivity : AppCompatActivity() {
     private fun writeNewUser(userId: String, name: String, email: String) {
         val user = User(name, email, Date().toString())
         myRef.child(userId).setValue(user)
+        Log.e("user id", userId)
     }
 
     inner class UserListAdapter(context: Context, private val values: List<User>) :
         ArrayAdapter<User>(context, R.layout.user_item) {
 
-        private val inflater: LayoutInflater
-                = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+        private val inflater: LayoutInflater =
+            context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
 
 
         @SuppressLint("ViewHolder")
         override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
             val rowView = inflater
                 .inflate(R.layout.user_item, parent, false)
-            val title: TextView = rowView.findViewById(R.id.item_title)
+            val title = rowView.findViewById<TextView>(R.id.item_title)
             title.text = values[position].username
-            val subtitle: TextView = rowView.findViewById(R.id.item_subtitle)
+            val subtitle = rowView.findViewById<TextView>(R.id.item_subtitle)
             val updatedText = "Updated: " + values[position].updatedDate
             subtitle.text = updatedText
             return rowView
