@@ -10,9 +10,13 @@ import android.widget.Button
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.textfield.TextInputEditText
+import com.google.firebase.FirebaseNetworkException
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
+import com.google.firebase.auth.FirebaseAuthInvalidUserException
 import com.google.firebase.auth.UserProfileChangeRequest
 import com.stevenswang.funfact.databinding.ActivityMainBinding
+import java.lang.Exception
 
 
 class MainActivity : AppCompatActivity() {
@@ -28,7 +32,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         binding.btnLogin.setOnClickListener {
-            if (validateEmail(textInputEmail.text.toString().trim())) {
+            if (isFormValid()) {
                 signIn()
             }
         }
@@ -73,7 +77,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun validateEmail(email: String): Boolean {
         if (email.isBlank()) {
-            textInputEmail.error = "Email cannot be empty"
+            textInputEmail.error = "Email cannot be blank"
             return false
         } else if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
             textInputEmail.error = "Please enter a valid email address"
@@ -84,14 +88,27 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private fun isFormValid(): Boolean {
+        val validEmail = validateEmail(textInputEmail.text.toString().trim())
+        val validUsername =
+            validateBlankString(textInputUsername.text.toString().trim(), textInputUsername)
+        val validPassword =
+            validateBlankString(textInputPassword.text.toString().trim(), textInputPassword)
+
+        return (validEmail && validUsername && validPassword)
+    }
+
+    private fun validateBlankString(input: String, textInput: TextInputEditText): Boolean {
+        if (input.isBlank()) {
+            textInput.error = "${textInput.hint} cannot be blank"
+            return false
+        } else {
+            textInput.error = null
+            return true
+        }
+    }
+
     private fun signIn() {
-        Log.d("FIREBASE", "signIn")
-
-        // 1 - validate name, email, and password entries
-
-        // 2 - save valid entries to shared preferences
-
-        // 3 - sign into Firebase
         val mAuth = FirebaseAuth.getInstance()
         mAuth.signInWithEmailAndPassword(
             textInputEmail.text.toString(),
@@ -100,7 +117,7 @@ class MainActivity : AppCompatActivity() {
             .addOnCompleteListener(
                 this
             ) { task ->
-                Log.e("FIREBASE", "signIn:onComplete:" + task.isSuccessful)
+                Log.d("FIREBASE", "signIn:onComplete:" + task.isSuccessful)
                 if (task.isSuccessful) {
                     writeToSharedPreference(
                         textInputEmail.text.toString(),
@@ -115,18 +132,15 @@ class MainActivity : AppCompatActivity() {
                     user!!.updateProfile(profileUpdates)
                         .addOnCompleteListener { task ->
                             if (task.isSuccessful) {
-                                Log.e("FIREBASE", "User profile updated.")
+                                Log.d("FIREBASE", "User profile updated.")
                                 // Go to FirebaseActivity
                                 startActivity(Intent(this, FirebaseActivity::class.java))
                             }
                         }
                 } else {
                     Log.e("FIREBASE", "sign-in failed")
-                    Toast.makeText(
-                        this@MainActivity, "Sign In Failed",
-                        Toast.LENGTH_SHORT
-                    ).show()
                     Log.e("task", task.exception.toString())
+                    displaySignInError(task.exception)
                 }
             }
     }
@@ -150,5 +164,24 @@ class MainActivity : AppCompatActivity() {
         return savedInfo
     }
 
-
+    private fun displaySignInError(e: Exception?) {
+        when (e) {
+            is FirebaseNetworkException -> Toast.makeText(
+                this,
+                "Network error, please check your internet connection",
+                Toast.LENGTH_SHORT
+            ).show()
+            is FirebaseAuthInvalidUserException -> Toast.makeText(
+                this,
+                "Unknown user, please contact admin to create an account",
+                Toast.LENGTH_SHORT
+            ).show()
+            is FirebaseAuthInvalidCredentialsException -> Toast.makeText(
+                this,
+                "Incorrect password",
+                Toast.LENGTH_SHORT
+            ).show()
+            else -> Toast.makeText(this, "Unknown error: ${e?.message}", Toast.LENGTH_SHORT).show()
+        }
+    }
 }

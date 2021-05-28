@@ -15,7 +15,6 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import java.util.*
 
-
 class FirebaseActivity : AppCompatActivity() {
 
     private lateinit var myRef: DatabaseReference
@@ -43,7 +42,6 @@ class FirebaseActivity : AppCompatActivity() {
                 currentUser.displayName.toString(),
                 currentUser.email.toString()
             )
-            Log.e("Current display name", currentUser.displayName.toString())
         } else {
             Log.e("user", "Current user is null")
         }
@@ -52,10 +50,10 @@ class FirebaseActivity : AppCompatActivity() {
         // get list of users
         myRef.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
-                Log.e("onDataChange", "On Data changed fired!")
+                Log.d("onDataChange", "Someone signed in!")
                 listAdapter.clear()
                 for (userSnapshot in dataSnapshot.children) {
-                    Log.e("UserSnapshot", userSnapshot.value.toString())
+                    Log.d("UserSnapshot", userSnapshot.value.toString())
                     val key = userSnapshot.key
                     val user = User(
                         userSnapshot.child("username").value.toString(),
@@ -79,7 +77,6 @@ class FirebaseActivity : AppCompatActivity() {
     private fun writeNewUser(userId: String, name: String, email: String) {
         val user = User(name, email, Date().toString())
         myRef.child(userId).setValue(user)
-        Log.e("user id", userId)
     }
 
     inner class UserListAdapter(context: Context, private val values: List<User>) :
