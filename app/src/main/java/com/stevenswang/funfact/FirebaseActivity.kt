@@ -53,8 +53,8 @@ class FirebaseActivity : AppCompatActivity() {
         myRef.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 Log.e("onDataChange", "On Data changed fired!")
+                listAdapter.clear()
                 for (userSnapshot in dataSnapshot.children) {
-                    // TODO: handle the post
                     Log.e("UserSnapshot", userSnapshot.value.toString())
                     val key = userSnapshot.key
                     val user = User(
@@ -64,6 +64,7 @@ class FirebaseActivity : AppCompatActivity() {
                     )
                     userData.add(user)
                 }
+
                 listAdapter.notifyDataSetChanged()
             }
 
@@ -82,7 +83,7 @@ class FirebaseActivity : AppCompatActivity() {
     }
 
     inner class UserListAdapter(context: Context, private val values: List<User>) :
-        ArrayAdapter<User>(context, R.layout.user_item) {
+        ArrayAdapter<User>(context, R.layout.user_item, values) {
 
         private val inflater: LayoutInflater =
             context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
@@ -95,12 +96,12 @@ class FirebaseActivity : AppCompatActivity() {
             val title = rowView.findViewById<TextView>(R.id.item_title)
             title.text = values[position].username
             val subtitle = rowView.findViewById<TextView>(R.id.item_subtitle)
-            val updatedText = "Updated: " + values[position].updatedDate
+            val updatedText = "Updated: " + values[position].updated
             subtitle.text = updatedText
             return rowView
         }
     }
 
-    inner class User(val username: String, val email: String, val updatedDate: String)
+    inner class User(val username: String, val email: String, val updated: String)
 
 }
