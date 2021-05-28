@@ -55,8 +55,13 @@ class FirebaseActivity : AppCompatActivity() {
                 for (userSnapshot in dataSnapshot.children) {
                     Log.d("UserSnapshot", userSnapshot.value.toString())
                     val key = userSnapshot.key
+                    val userNameString = if (userSnapshot.child("username").value != null) {
+                        userSnapshot.child("username").value.toString()
+                    } else {
+                        "N/A"
+                    }
                     val user = User(
-                        userSnapshot.child("username").value.toString(),
+                        userNameString,
                         userSnapshot.child("email").value.toString(),
                         userSnapshot.child("updated").value.toString()
                     )
